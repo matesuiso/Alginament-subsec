@@ -34,6 +34,13 @@ public class Alignment {
 
      fill(x, y);
 
+     for (int i = 0; i <= lengthx ; i++ ) {
+        for (int j = 0; j <= lengthy ; j++ ) {
+           System.out.print(F[i][j] + " ");
+        }
+        System.out.println(" ");
+     }
+
      String[] asd = getAlignment1(x, y);
 
      System.out.println(asd[0]);
@@ -81,11 +88,11 @@ public class Alignment {
    private void fill(String A, String B) throws Exception {
       int d = 1;
 
-      for (int i = 0; i < lengthx ; i++ ) {
+      for (int i = 0; i <= lengthx ; i++ ) {
          F[i][0] = 1*i;
       }
 
-      for (int j = 0; j < lengthx ; j++ ) {
+      for (int j = 0; j <= lengthx ; j++ ) {
          F[0][j] = 1*j;
       }
 
@@ -93,8 +100,8 @@ public class Alignment {
       int delete;
       int insert;
 
-      for (int i = 1 ; i < lengthx ; i++ ) {
-         for (int j = 1; j < lengthy ; j++ ) {
+      for (int i = 1 ; i <= lengthx ; i++ ) {
+         for (int j = 1; j <= lengthy ; j++ ) {
             try {
               // common failure, method isn't static,
               match = cost("" + A.charAt(i-1), "" + B.charAt(j-1));
@@ -104,7 +111,7 @@ public class Alignment {
             delete = F[i-1][j] +1;
             insert = F[i][j-1] +1;
 
-            int maximo = Math.max(Math.max(match, delete), insert);
+            int maximo = Math.min(Math.min(match, delete), insert);
 
             F[i][j] = maximo;
 
