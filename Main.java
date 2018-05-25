@@ -25,11 +25,11 @@ public class Main {
     Method theCostMethod = theClass.getDeclaredMethod(methodName, parameterTypes);
 
 
-    Alignament asd = new Alignament(theCostMethod);
+    Alignment asd = new Alignment(theCostMethod);
 
 
 
-    int res2 = asd.getAlignament(word1, word2);
+    int res2 = asd.getAlignment(word1, word2);
 
     System.out.println(res2);
 
