@@ -1,5 +1,7 @@
 import java.lang.reflect.Method;
 import java.lang.Math.*;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Alignment {
   private int lengthx;
@@ -8,11 +10,13 @@ public class Alignment {
   private Class cl;    // class from cost method
   private int[][] F;
   private String simbol = "-";
+  private Map<Tupla<String, String>, Tupla<Integer, String>> map;
 
   // Constructor
   public Alignment (Method f) {
     func = f;
     cl = f.getDeclaringClass();
+    map = new HashMap<Tupla<String, String>, Tupla<Integer, String>>();
   }
 
   // Auxiliar method to excecute the cost method
@@ -76,13 +80,18 @@ public class Alignment {
          String[] revisar3 = cosa (cortar(x), cortar(y));
 
          int rev1,rev2,rev3;
+
+         // ver si costo en hash
+
          try {
             rev1 = cost(revisar1[0], revisar1[1]);
             rev2 = cost(revisar2[0], revisar2[1]);
             rev3 = cost(revisar3[0], revisar3[1]);
          } catch(Exception e) {
-            throw new Exception ("Cost Method Failure. Values");
+            throw new Exception ("Cost Method Failure.");
          }
+
+         // aca guardar hash
 
          if (rev1 < rev2) {
            if (rev1 < rev3) {
