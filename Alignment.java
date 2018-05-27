@@ -4,22 +4,22 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class Alignment {
-  private int lengthx;
-  private int lengthy;
   private Method func; // cost method
   private Class cl;    // class from cost method
-  private int[][] F;
-  private String simbol = "-";
+  private String simbol;
   private Map<String, String[]> cache;
+  private String alphabet;
 
-
-  //Tupla<String, String>
 
   // Constructor
-  public Alignment (Method f) {
+  public Alignment (Method f, String simb, String chars) {
     func = f;
     cl = f.getDeclaringClass();
+
+    simbol = simb;
+    alphabet = chars;
     cache = new HashMap<String, String[]>();
+
   }
 
 
@@ -29,7 +29,7 @@ public class Alignment {
     Object[] parameters = {x, y};
 
     try {
-      // common failure, method isn't static,
+      // common failure, method isn't static
       return (int) func.invoke(cl, parameters);
     } catch(Exception e) {
       throw new Exception ("Cost Method Failure. Values: first "+ parameters[0] + " second " + parameters[1]);
@@ -38,32 +38,49 @@ public class Alignment {
 
 
 
-  public int getAlignment (String x, String y) throws Exception{
-     lengthx = x.length();
-     lengthy = y.length();
+  // Method that verifies if the elements of the String belong to the alphabet
+  private Boolean verif(String x) {
 
-     String[] prueba = getStrings(x, y);
+     for (int i= 0; i < x.length() ; i++) {
+        if (alphabet.indexOf(x.charAt(i)) == -1) {
+           return false;
+        }
+     }
 
-     System.out.println(prueba[0]);
-     System.out.println(prueba[1]);
+     return true;
+ }
 
-     return cost (x, y);
+
+
+ // Method that verifies the Strings and returns the alignment
+  public String[] getAlignment (String x, String y) throws Exception{
+
+     // Only run, if the Strings belong to the dictionary
+     if (!(verif(x) && verif(y))) {
+        throw new Exception ("Some strings have characters that do not belong to the alphabet");
+     } else {
+
+        String[] result = getStrings(x, y);
+        return result;
+     }
   }
 
 
 
+  // Method that returns the best alignment
   private String[] getStrings (String x, String y) throws Exception{
      String res1 = "";
      String res2 = "";
 
-     Tupla<String, String> aux = new Tupla<String, String>(x, y);
-
-     if (cache.containsKey(x + y)) {
+     // If the recursive call has already been made, the stored value is returned
+     if (cache.containsKey(x + y) & y.length() > 0 && x.length() > 0) {
         return cache.get(x + y);
      }
 
+     // If a string is not zero, the calculation is made
      if (y.length() > 0 && x.length() > 0) {
 
+        // If the Chars are equal, we align them
         if (x.charAt(0) == y.charAt(0)) {
 
            res1 += x.charAt(0);
@@ -74,9 +91,8 @@ public class Alignment {
            res1 += tmp[0];
            res2 += tmp[1];
 
+         // If the Chars are not equal, we compare the different alignments
         } else {
-
-           Tupla<String, String> key;
 
            // aca llamamos con el 'y' sin un elemento
            String res11 = res1 + simbol;
@@ -85,6 +101,7 @@ public class Alignment {
 
            String[] revisar1 = getStrings(x, casiY);
 
+
            // aca llamamos con el 'x' sin un elemento
            String res21 = res1 + x.charAt(0);
            String res22 = res2 + simbol;
@@ -92,15 +109,15 @@ public class Alignment {
 
            String[] revisar2 = getStrings (casiX, y);
 
+
            // aca llamams al metodo, salteando ambos
            String res31 = res1 + x.charAt(0);
            String res32 = res2 + y.charAt(0);
 
            String[] revisar3 = getStrings (cortar(x), cortar(y));
 
+
            int rev1,rev2,rev3;
-
-
 
            try {
              rev1 = cost(revisar1[0], revisar1[1]);
@@ -111,7 +128,7 @@ public class Alignment {
           }
 
 
-
+          // We acum the best String in res1 and res2
           if (rev1 < rev2) {
              if (rev1 < rev3) {
                 res1 += res11 + revisar1[0];
@@ -136,7 +153,10 @@ public class Alignment {
 
 
        }
+
+   // If some String are zero, we fill it with the simbol
     } else {
+
       if (y.length() == 0) {
          for (int k = 0; k < x.length() ; k++) {
             res2 += simbol;
@@ -151,17 +171,16 @@ public class Alignment {
 
    }
 
+   // We made an auxiliary to return the best result, and save it
    String[] result = {res1, res2};
-
    cache.put(x + y, result);
-
 
    return result;
 
    }
 
 
-
+   // This method, cut the first element of a String
    private String cortar (String x) {
       String resu = "";
       for (int i= 1; i< x.length() ; i++ ) {
