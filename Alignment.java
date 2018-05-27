@@ -10,13 +10,13 @@ public class Alignment {
   private Class cl;    // class from cost method
   private int[][] F;
   private String simbol = "-";
-  private Map<Tupla<String, String>, Tupla<Integer, String>> map;
+  private Map<Tupla<String, String>, Tupla<Integer, String>> cache;
 
   // Constructor
   public Alignment (Method f) {
     func = f;
     cl = f.getDeclaringClass();
-    map = new HashMap<Tupla<String, String>, Tupla<Integer, String>>();
+    cache = new HashMap<Tupla<String, String>, Tupla<Integer, String>>();
   }
 
   // Auxiliar method to excecute the cost method
