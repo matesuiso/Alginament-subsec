@@ -1,0 +1,21 @@
+Cosas a tener en cuenta antes de comenzar a utilizar la App
+
+
+- Primero hay que compilar todos las partes (Main, Alignment, FuncionDeCosto).
+- La funcion de costo, puede variar de nombre, como tambien de clase, solo teniendo en cuenta de compilar la misma antes de utilizarla.
+- La restriccion para la funcion de costo, es que reciba dos parametros (String) y devuelva uno (int).
+
+
+Como usar la App
+
+- Utilizando en comando:
+  "java Main <cadena1> <cadena2> <Simbolo destacado> <Alfabeto valido> <nombre de la funcion de costo(nombre metodo)> <nombre de la clase(clase que contiene funcion de costo)>"
+- La App mostrara por pantalla el mejor alineamiento de las cadenas, introduciendo, si fuera necesario, el simbolo destacado donde fuera necesario.
+
+
+Como encaramos el problema
+
+- Para una primera instancia, se penso en una solucion Decrease and Conquer, en la cual se descarta, al menos un elemento de la cadena original.
+Esto nos dio una solucion correcta, pero, ineficiente. Despues de un analisis, llegamos a la conclusion que muchas llamadas recursivas,
+se solapaban, por lo que inferimos que una posible solucion, seria evitar esos casos. Para esto aplicamos "Memoization" utilizando un
+HashMap para guardar las soluciones intermedias y asi utilizarlas cuando el caso se repitiese.
