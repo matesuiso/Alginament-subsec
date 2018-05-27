@@ -10,13 +10,16 @@ public class Alignment {
   private Class cl;    // class from cost method
   private int[][] F;
   private String simbol = "-";
-  private Map<Tupla<String, String>, Tupla<Integer, String>> cache;
+  private Map<String, String[]> cache;
+
+
+  //Tupla<String, String>
 
   // Constructor
   public Alignment (Method f) {
     func = f;
     cl = f.getDeclaringClass();
-    cache = new HashMap<Tupla<String, String>, Tupla<Integer, String>>();
+    cache = new HashMap<String, String[]>();
   }
 
 
@@ -53,6 +56,12 @@ public class Alignment {
      String res1 = "";
      String res2 = "";
 
+     Tupla<String, String> aux = new Tupla<String, String>(x, y);
+
+     if (cache.containsKey(x + y)) {
+        return cache.get(x + y);
+     }
+
      if (y.length() > 0 && x.length() > 0) {
 
         if (x.charAt(0) == y.charAt(0)) {
@@ -67,26 +76,31 @@ public class Alignment {
 
         } else {
 
+           Tupla<String, String> key;
+
            // aca llamamos con el 'y' sin un elemento
            String res11 = res1 + simbol;
            String res12 = res2 + y.charAt(0);
            String casiY = cortar(y);
+
            String[] revisar1 = getStrings(x, casiY);
 
            // aca llamamos con el 'x' sin un elemento
            String res21 = res1 + x.charAt(0);
            String res22 = res2 + simbol;
            String casiX = cortar(x);
+
            String[] revisar2 = getStrings (casiX, y);
 
            // aca llamams al metodo, salteando ambos
            String res31 = res1 + x.charAt(0);
            String res32 = res2 + y.charAt(0);
+
            String[] revisar3 = getStrings (cortar(x), cortar(y));
 
            int rev1,rev2,rev3;
 
-           // ver si costo en hash
+
 
            try {
              rev1 = cost(revisar1[0], revisar1[1]);
@@ -96,25 +110,30 @@ public class Alignment {
              throw new Exception ("Cost Method Failure.");
           }
 
-          // aca guardar hash
+
 
           if (rev1 < rev2) {
              if (rev1 < rev3) {
                 res1 += res11 + revisar1[0];
                 res2 += res12 + revisar1[1];
+
              } else {
                 res1 += res31 + revisar3[0];
                 res2 += res32 + revisar3[1];
+
              }
           } else {
              if (rev2 < rev3) {
                 res1 += res21 + revisar2[0];
                 res2 += res22 + revisar2[1];
+
              } else {
                 res1 += res31 + revisar3[0];
                 res2 += res32 + revisar3[1];
+
              }
           }
+
 
        }
     } else {
@@ -133,8 +152,12 @@ public class Alignment {
    }
 
    String[] result = {res1, res2};
+
+   cache.put(x + y, result);
+
+
    return result;
-   
+
    }
 
 
